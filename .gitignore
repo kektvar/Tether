@@ -1,0 +1,17 @@
+*.exe
+*.out
+*.app
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+copypaste.c
+/build/
+/cmake-build-debug/
+/cmake-build-release/
+.vscode/
+.idea/
+copypaste
+main

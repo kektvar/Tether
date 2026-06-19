@@ -1,7 +1,9 @@
-#include <linux/sysinfo.h>
+// Standart C headers
 #include <stdio.h>
-#include <sys/utsname.h>
 #include <string.h>
+
+// POSIX C headers
+#include <sys/utsname.h>
 #include <sys/sysinfo.h>
 #include <sys/statvfs.h>
 #include <unistd.h>

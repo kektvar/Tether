@@ -7,11 +7,9 @@
 *.lib
 *.so
 *.dll
-copypaste.c
 /build/
 /cmake-build-debug/
 /cmake-build-release/
 .vscode/
 .idea/
-copypaste
 main

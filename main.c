@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys/sysinfo.h>
 #include <sys/statvfs.h>
+#include <unistd.h>
 
 void os() {
     FILE *fp = fopen("/etc/os-release", "r"); //fopen - функция открытия файла, *fp - переменная указатель
@@ -21,7 +22,7 @@ void os() {
 //В файле строка выглядит так: PRETTY_NAME="Arch Linux". Нам не нужно сравнивать её целиком, нам важно узнать:
 // начинается ли эта строка с нужного нам маркера? Если первые 12 символов совпали, функция возвращает 0. Именно поэтому мы пишем == 0
 //----------------------------------------------------------------------------------------------------------
-            printf("Дистрибутив: %s", line + 12); //line + 12 -> мы перешагиваем с PRETTY_NAME= на название дистрибутива
+            printf("Distro: %s", line + 12); //line + 12 -> мы перешагиваем с PRETTY_NAME= на название дистрибутива
             break;
         }
     }
@@ -51,7 +52,7 @@ void ram() {
     unsigned long long total_gb = totalkbram / (1024 * 1024);
     unsigned long long used_gb = usedkbram / (1024 * 1024);
 
-    printf("Оперативная память: %llu GB / %llu GB\n", used_gb, total_gb);
+    printf("RAM: %llu GB / %llu GB\n", used_gb, total_gb);
 }
 
 void memory() {
@@ -68,13 +69,45 @@ void memory() {
         unsigned long long used_bytes = used_blocks * vfs.f_frsize; //Переводим занятые блоки в байты, умножая на размер блока
         unsigned long long used_gb = used_bytes / (1024 * 1024 * 1024);
 
-        printf("Диск: %llu GB / %llu GB", used_gb, total_gb);
+        printf("SSD: %llu GB / %llu GB\n", used_gb, total_gb);
     }
+}
+
+void user() {
+    char *username = getlogin(); // getlogin() опрашивает систему и возвращает указатель на строку (char *) с именем пользователя, который управляет текущим терминалом
+    if (username != NULL) {
+        printf("User: %s\n", username);
+    } else {
+        printf("User: ???\n");
+    }
+}
+
+void cpu() {
+    FILE *fp = fopen("/proc/cpuinfo", "r");
+    if (fp == NULL) return;
+
+    char line[256];
+    while (fgets(line, sizeof(line), fp)) {
+        // Ищем строку начинающуюся с "model name"
+        if (strncmp(line, "model name", 10) == 0) {
+            char *cpu_name = strchr(line, ':'); // 1. Где искать 2. Искомый символ
+            // strchr() — найти первое вхождение определенного символа в строке
+            // *cpu_name указывает именно на этот символ в строке line
+            if (cpu_name != NULL) { // Если функция strchr обыщет всю строку и не найдет двоеточие, она вернет пустоту — NULL
+                cpu_name += 2; // выводим название без двоеточия и пробела
+                printf("CPU: %s\n", cpu_name); 
+                break;
+            }
+        }
+    }
+    fclose(fp);
 }
 
 int main() {
     os();
     ram();
     memory();
+    user();
+    cpu();
     return 0;
 }

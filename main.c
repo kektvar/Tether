@@ -1,6 +1,7 @@
 // Standart C headers
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 // POSIX C headers
 #include <sys/utsname.h>
@@ -97,12 +98,43 @@ void cpu() {
             // *cpu_name указывает именно на этот символ в строке line
             if (cpu_name != NULL) { // Если функция strchr обыщет всю строку и не найдет двоеточие, она вернет пустоту — NULL
                 cpu_name += 2; // выводим название без двоеточия и пробела
-                printf("CPU: %s\n", cpu_name); 
+                printf("CPU: %s", cpu_name); 
                 break;
             }
         }
     }
     fclose(fp);
+}
+
+void gpu() {
+    // work in progress
+}
+
+void shell() {
+    char *shell_path = getenv("SHELL"); // Функция getenv() вернет полный путь, например: "/bin/bash" или "/usr/bin/zsh"
+
+    if (shell_path != NULL) {
+        char *shell_name = strrchr(shell_path, '/');
+        // Чтобы не выводить длинный путь "/usr/bin/zsh" или "/bin/bash",
+        // мы можем найти самый последний слеш '/' в строке с помощью функции strrchr()
+
+        if (shell_name != NULL) {
+            printf("Shell: %s\n", shell_name + 1);
+        } else {
+            printf("Shell: %s\n", shell_path);
+        }
+    }
+}
+
+void hostname() {
+    struct utsname host_info;
+
+    if (uname(&host_info) == 0) {
+        printf("Host: %s\n", host_info.nodename);
+        // Когда ты вызываешь функцию uname(&host_info),
+        // ядро Linux берет имя твоего ПК (которое ты можешь настроить в файле /etc/hostname)
+        // и копирует эти буквы в массив host_info.nodename.
+    }
 }
 
 int main() {
@@ -111,5 +143,8 @@ int main() {
     memory();
     user();
     cpu();
+    // gpu();
+    shell(); // works wrong
+    hostname();
     return 0;
 }

@@ -11,6 +11,8 @@ A minimalist and fast system information fetching tool for Linux written in pure
 * Used and total storage space on the root partition ('/').
 * Username
 * CPU name
+* Shell name
+* Host name
 
 ## Installation & Usage
 
@@ -31,6 +33,8 @@ gcc main.c -o tether
 * Занятое и общее пространство на корневом разделе диска ('/').
 * Имя пользователя.
 * Название процессора.
+* Название оболочки
+* Имя хоста
 
 ## Сборка и запуск
 
